@@ -1,5 +1,6 @@
 import { Post, Controller, UseBefore, Req, Use } from '@tsed/common';
 import { VerifySignature } from '../../middlewares/VerifySignature';
+import { CheckEvent } from '../../middlewares/CheckEvent';
 import { Request } from 'express';
 import { octokit } from '../../Octokit';
 import PushPayload from '../../types/PushEvent/PushPayload';
@@ -8,11 +9,10 @@ import Commit from '../../types/PushEvent/Commit';
 import FileUpload from '../../requests/FileUpload';
 import File from '../../types/FileUpload/File';
 import Notification from '../../discord/Notification';
-import { CheckEvent } from '../../middlewares/CheckEvent';
 
 @Controller('/webhook')
-@Use(VerifySignature)
-@Use(CheckEvent)
+@UseBefore(VerifySignature)
+@UseBefore(CheckEvent)
 export class WebhookController {
     @Post()
     async res(@Req() req: Request) {

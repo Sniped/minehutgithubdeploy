@@ -8,7 +8,7 @@ export class VerifySignature implements IMiddleware {
     use(@Req() req: Req) {
         const payload = JSON.stringify(req.body);
         const sig = req.get('X-Hub-Signature');
-        if (!sig) return;
+        if (!sig) throw new Unauthorized('Validation could not be done!');
         const hmac = crypto.createHmac('sha1', config.github.secret);
         const digest = Buffer.from(`sha1=${hmac.update(payload).digest('hex')}`, 'utf8');
         const checksum = Buffer.from(sig, 'utf8');

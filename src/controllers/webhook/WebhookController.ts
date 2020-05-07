@@ -8,9 +8,11 @@ import Commit from '../../types/PushEvent/Commit';
 import FileUpload from '../../requests/FileUpload';
 import File from '../../types/FileUpload/File';
 import Notification from '../../discord/Notification';
+import { CheckEvent } from '../../middlewares/CheckEvent';
 
 @Controller('/webhook')
 @UseBefore(VerifySignature)
+@UseBefore(CheckEvent)
 export class WebhookController {
     @Post()
     async res(@Req() req: Request) {

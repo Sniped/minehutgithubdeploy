@@ -17,7 +17,7 @@ export default class FileUpload {
             const text = await this.fetchRawText(file.url);
             const body = { content: text };
             const path = `/plugins/Skript/scripts/${file.name}`
-            const res = await fetch(`${config.minehut.base}/file/${config.minehut.serverID}/${path}`, {
+            const res = await fetch(`${config.minehut.base}/file/${config.minehut.serverID}/edit/${path}`, {
                 method: 'post',
                 body: JSON.stringify(body),
                 headers: {

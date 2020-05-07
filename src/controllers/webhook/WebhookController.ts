@@ -1,6 +1,5 @@
 import { Post, Controller, UseBefore, Req, Use } from '@tsed/common';
 import { VerifySignature } from '../../middlewares/VerifySignature';
-import { CheckEvent } from '../../middlewares/CheckEvent';
 import { Request } from 'express';
 import { octokit } from '../../Octokit';
 import PushPayload from '../../types/PushEvent/PushPayload';
@@ -12,10 +11,11 @@ import Notification from '../../discord/Notification';
 
 @Controller('/webhook')
 @UseBefore(VerifySignature)
-@UseBefore(CheckEvent)
 export class WebhookController {
     @Post()
     async res(@Req() req: Request) {
+        const eventName = req.get('X-GitHub-Event');
+        if (eventName == 'ping') return {};
         const payload: PushPayload = req.body;
         const repo: Repository = payload.repository;
         const commits: Commit[] = payload.commits;

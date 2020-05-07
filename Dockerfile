@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 ADD . .
 
 RUN npm install
-RUN npm run tsc
+RUN tsc
 
 CMD [ "node", "dist/app.js" ]
 EXPOSE 3000

@@ -1,4 +1,4 @@
-import { Post, Controller, UseBefore, Req } from '@tsed/common';
+import { Post, Controller, UseBefore, Req, Use } from '@tsed/common';
 import { VerifySignature } from '../../middlewares/VerifySignature';
 import { Request } from 'express';
 import { octokit } from '../../Octokit';
@@ -11,8 +11,8 @@ import Notification from '../../discord/Notification';
 import { CheckEvent } from '../../middlewares/CheckEvent';
 
 @Controller('/webhook')
-@UseBefore(VerifySignature)
-@UseBefore(CheckEvent)
+@Use(VerifySignature)
+@Use(CheckEvent)
 export class WebhookController {
     @Post()
     async res(@Req() req: Request) {

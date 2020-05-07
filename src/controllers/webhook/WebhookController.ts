@@ -23,6 +23,7 @@ export class WebhookController {
         initialNotification.send();
         commits.forEach(async c => {
             const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
+            return commit.data.files;
             const files: File[] = commit.data.files.map(f => { 
                 return { name: f.filename, url: f.raw_url } 
             });

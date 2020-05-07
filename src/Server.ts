@@ -12,8 +12,8 @@ const rootDir = __dirname;
         '/webhook': `${rootDir}/controllers/webhook/*.ts`
     },
     componentsScan: [
-        `${rootDir}/middlewares/**/*.ts`,
-        `${rootDir}/services/**/*.ts`
+        `${rootDir}/middlewares/*.ts`,
+        `${rootDir}/services/*.ts`
     ]
  })
  export class Server extends ServerLoader {

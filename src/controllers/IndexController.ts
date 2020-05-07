@@ -4,6 +4,6 @@ import { Get, Controller } from '@tsed/common';
 export class IndexController {
     @Get()
     res(): string {
-        return "api is online";
+        return "api is online.";
     }
 }

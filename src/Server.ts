@@ -10,7 +10,11 @@ const rootDir = __dirname;
     mount: {
         '/': `${rootDir}/controllers/*.ts`,
         '/webhook': `${rootDir}/controllers/webhook/*.ts`
-    }
+    },
+    componentsScan: [
+        `${rootDir}/middlewares/**/*.ts`,
+        `${rootDir}/services/**/*.ts`
+    ]
  })
  export class Server extends ServerLoader {
      public $beforeRoutesInit(): void | Promise<any> {

@@ -9,7 +9,7 @@ export class VerifySignature implements IMiddleware {
         const payload = JSON.stringify(req.body);
         const sig = req.get('X-Hub-Signature');
         if (!sig) return;
-        const hmac = crypto.createHmac('sha1', config.secret);
+        const hmac = crypto.createHmac('sha1', config.github.secret);
         const digest = Buffer.from(`sha1=${hmac.update(payload).digest('hex')}`, 'utf8');
         const checksum = Buffer.from(sig, 'utf8');
         if (!crypto.timingSafeEqual(digest, checksum)) {

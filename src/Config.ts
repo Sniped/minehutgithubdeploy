@@ -3,8 +3,10 @@ import path from 'path';
 import ClientOptions from './discord/Client/ClientOptions';
 
 interface ConfigInterface {
-    secret: string;
-    accessToken: string;
+    github: {
+        secret: string;
+        accessToken: string;
+    }
     discord: ClientOptions;
     minehut: {
         base: string;

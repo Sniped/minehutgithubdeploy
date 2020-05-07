@@ -23,10 +23,10 @@ export class WebhookController {
         initialNotification.send();
         commits.forEach(async c => {
             const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
-            return commit.data.files;
             const files: File[] = commit.data.files.map(f => { 
                 return { name: f.filename, url: f.raw_url } 
             });
+            console.log(files);
             const req = new FileUpload(files);
             const responses = await req.execute();
             const filteredRes = responses.filter(f => f.res.status !== 200);

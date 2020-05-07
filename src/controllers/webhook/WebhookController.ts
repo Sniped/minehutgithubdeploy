@@ -26,7 +26,6 @@ export class WebhookController {
             const files: File[] = commit.data.files.map(f => { 
                 return { name: f.filename, url: f.raw_url } 
             });
-            console.log(files);
             const req = new FileUpload(files);
             const responses = await req.execute();
             const filteredRes = responses.filter(f => f.res.status !== 200);

@@ -8,12 +8,11 @@ const rootDir = __dirname;
     httpPort: 3000,
     acceptMimes: ['application/json'],
     mount: {
-        '/': `${rootDir}/controllers/*.ts`,
-        '/webhook': `${rootDir}/controllers/webhook/*.ts`
+        '/': `${rootDir}/controllers/**/*.ts`,
     },
     componentsScan: [
-        `${rootDir}/middlewares/*.ts`,
-        `${rootDir}/services/*.ts`
+        `${rootDir}/middlewares/**/*.ts`,
+        `${rootDir}/services/**/*.ts`
     ]
  })
  export class Server extends ServerLoader {

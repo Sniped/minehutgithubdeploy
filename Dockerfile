@@ -4,6 +4,7 @@ WORKDIR /usr/src/app
 
 ADD . .
 
+RUN npm install -g typescript
 RUN npm install
 RUN tsc
 

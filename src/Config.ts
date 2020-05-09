@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import ClientOptions from './discord/Client/ClientOptions';
+import ServerOptions from './minehut/server/ServerOptions';
 
 interface ConfigInterface {
     github: {
@@ -10,9 +11,7 @@ interface ConfigInterface {
     discord: ClientOptions;
     minehut: {
         base: string;
-        token: string;
-        serverID: string;
-        sessionID: string;
+        options: ServerOptions;
     }
 }
 

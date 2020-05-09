@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
+import { server } from '../Minehut';
 import { config } from '../Config';
-import FileResponse from '../types/FileUpload/FileResponse';
+import { FileRes } from './server/types/ResTypes';
 
 export default class FileUpload {
     
@@ -10,23 +11,15 @@ export default class FileUpload {
         this.files = files;
     }
 
-    async execute() : Promise<FileResponse[]> {
-        const fileResponses: FileResponse[] = [];
+    async execute() : Promise<FileRes[]> {
+        const fileResponses: FileRes[] = [];
         this.files.forEach(async file => {
             console.log(file);
             if (!Array.isArray(file)) {
                 const text = Buffer.from(file.content!, 'base64').toString();
                 const body = { content: text };
                 const path = `/plugins/Skript/scripts/${file.name}`
-                const res = await fetch(`${config.minehut.base}/file/${config.minehut.serverID}/edit/${path}`, {
-                    method: 'post',
-                    body: JSON.stringify(body),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': config.minehut.token,
-                        'x-session-id': config.minehut.sessionID
-                    }
-                });
+                const res = await server.uploadFile(path, body);
                 fileResponses.push({ name: file.name, res: res });
             }
         });

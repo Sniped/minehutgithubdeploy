@@ -2,10 +2,12 @@ import { Post, Controller, UseBefore, Req, Use } from '@tsed/common';
 import { VerifySignature } from '../../middlewares/VerifySignature';
 import { Request } from 'express';
 import { octokit } from '../../Octokit';
-import PushPayload from '../../types/PushEvent/PushPayload';
-import Repository from '../../types/PushEvent/repository/Repository';
-import Commit from '../../types/PushEvent/Commit';
-import FileUpload from '../../requests/FileUpload';
+import { server } from '../../Minehut';
+import { StatusRes } from '../../minehut/server/types/ResTypes';
+import PushPayload from '../../github/PushEvent/PushPayload';
+import Repository from '../../github/PushEvent/repository/Repository';
+import Commit from '../../github/PushEvent/Commit';
+import FileUpload from '../../minehut/FileUpload';
 import Notification from '../../discord/Notification';
 
 @Controller('/webhook')
@@ -20,6 +22,16 @@ export class WebhookController {
         const commits: Commit[] = payload.commits;
         const initialNotification = new Notification('Received webhook request', 'INFO');
         initialNotification.send();
+        const serverStatus: StatusRes = await server.getStatus();
+        if (serverStatus.status != 'ONLINE') {
+            const offlineServerNotification = new Notification('Server is offline, starting it up... please wait 1 minute.', 'WARN');
+            offlineServerNotification.send();
+            if (serverStatus.status == 'SERVICE_OFFLINE') {
+                await server.startService();
+            } else if (serverStatus.status == 'OFFLINE') {
+                await server.start();
+            }
+        }
         commits.forEach(async c => {
             const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
             const files: ReposGetContentsResponseData[] = [];
@@ -31,7 +43,7 @@ export class WebhookController {
             }
             const req = new FileUpload(files);
             const responses = await req.execute();
-            const filteredRes = responses.filter(f => f.res.status !== 200);
+            const filteredRes = responses.filter(f => f.res);
             if (filteredRes.length > 0) {
                 const errorNotification = new Notification('Error while uploading files to Minehut!', 'ERROR');
                 errorNotification.send();

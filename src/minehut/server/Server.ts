@@ -33,8 +33,7 @@ export default class Server {
                 'x-session-id': this.options.sessionID
             }
         });
-        const success = res.status == 200;
-        return new Promise(resolve => setTimeout(() => resolve(success), 30000));
+        return res.status == 200;
     }
 
     async start() : Promise<boolean> {
@@ -46,8 +45,7 @@ export default class Server {
                 'x-session-id': this.options.sessionID
             }
         });
-        const success = res.status == 200;
-        return new Promise(resolve => setTimeout(() => resolve(success), 30000));
+        return res.status == 200;
     }
 
     async uploadFile(path: string, content: FileUploadReq) : Promise<boolean> {

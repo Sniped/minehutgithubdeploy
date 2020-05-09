@@ -31,6 +31,7 @@ export class WebhookController {
             } else if (serverStatus.status == 'OFFLINE') {
                 await server.start();
             }
+            await this.sleep();
         }
         commits.forEach(async c => {
             const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
@@ -52,5 +53,9 @@ export class WebhookController {
                 successNotifiation.send();
             }
         });
+    }
+
+    async sleep() : Promise<unknown> {
+        return new Promise(resolve => setTimeout(resolve, 30000));
     }
 }

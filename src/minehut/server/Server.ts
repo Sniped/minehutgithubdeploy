@@ -34,7 +34,7 @@ export default class Server {
             }
         });
         const success = res.status == 200;
-        return new Promise(resolve => setTimeout(() => resolve(success), 1000));
+        return new Promise(resolve => setTimeout(() => resolve(success), 30000));
     }
 
     async start() : Promise<boolean> {
@@ -47,7 +47,7 @@ export default class Server {
             }
         });
         const success = res.status == 200;
-        return new Promise(resolve => setTimeout(() => resolve(success), 1000));
+        return new Promise(resolve => setTimeout(() => resolve(success), 30000));
     }
 
     async uploadFile(path: string, content: FileUploadReq) : Promise<boolean> {

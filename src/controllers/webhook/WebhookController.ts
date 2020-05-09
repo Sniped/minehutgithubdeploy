@@ -27,7 +27,9 @@ export class WebhookController {
                 const file: ReposGetContentsResponseData = fileRes.data;
                 return file;
             }));
-            console.log(await files);
+            files.then(f => {
+                console.log(f);
+            });
             const req = new FileUpload(await files);
             const responses = await req.execute();
             const filteredRes = responses.filter(f => f.res.status !== 200);

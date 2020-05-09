@@ -14,7 +14,7 @@ export default class FileUpload {
         const fileResponses: FileResponse[] = [];
         this.files.forEach(async file => {
             if (Array.isArray(file)) return;
-            console.log(file.content!);
+            console.log(file);
             const text = Buffer.from(file.content!, 'base64').toString();
             const body = { content: text };
             const path = `/plugins/Skript/scripts/${file.name}`

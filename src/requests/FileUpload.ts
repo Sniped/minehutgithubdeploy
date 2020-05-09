@@ -15,8 +15,8 @@ export default class FileUpload {
         this.files.forEach(async file => {
             if (Array.isArray(file)) return;
             const text = Buffer.from(file.content!, 'base64').toString();
+            console.log(text);
             const body = { content: text };
-            console.log(body);
             const path = `/plugins/Skript/scripts/${file.name}`
             const res = await fetch(`${config.minehut.base}/file/${config.minehut.serverID}/edit/${path}`, {
                 method: 'post',

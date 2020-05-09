@@ -53,7 +53,7 @@ export default class Server {
     async uploadFile(path: string, content: FileUploadReq) : Promise<boolean> {
         const res = await fetch(`${config.minehut.base}/file/${this.options.serverID}/edit/${path}`, {
             method: 'POST',
-            body: JSON.stringify({ content }),
+            body: JSON.stringify({ content: content }),
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': this.options.token,

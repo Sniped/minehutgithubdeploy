@@ -13,21 +13,22 @@ export default class FileUpload {
     async execute() : Promise<FileResponse[]> {
         const fileResponses: FileResponse[] = [];
         this.files.forEach(async file => {
-            if (Array.isArray(file)) return;
             console.log(file);
-            const text = Buffer.from(file.content!, 'base64').toString();
-            const body = { content: text };
-            const path = `/plugins/Skript/scripts/${file.name}`
-            const res = await fetch(`${config.minehut.base}/file/${config.minehut.serverID}/edit/${path}`, {
-                method: 'post',
-                body: JSON.stringify(body),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': config.minehut.token,
-                    'x-session-id': config.minehut.sessionID
-                }
-            });
-            fileResponses.push({ name: file.name, res: res });
+            if (!Array.isArray(file)) {
+                const text = Buffer.from(file.content!, 'base64').toString();
+                const body = { content: text };
+                const path = `/plugins/Skript/scripts/${file.name}`
+                const res = await fetch(`${config.minehut.base}/file/${config.minehut.serverID}/edit/${path}`, {
+                    method: 'post',
+                    body: JSON.stringify(body),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': config.minehut.token,
+                        'x-session-id': config.minehut.sessionID
+                    }
+                });
+                fileResponses.push({ name: file.name, res: res });
+            }
         });
         return fileResponses;
     }

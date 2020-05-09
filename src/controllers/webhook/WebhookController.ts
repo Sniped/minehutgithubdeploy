@@ -23,12 +23,12 @@ export class WebhookController {
         const initialNotification = new Notification('Received webhook request', 'INFO');
         initialNotification.send();
         const serverStatus: StatusRes = await server.getStatus();
-        if (serverStatus.status != 'ONLINE') {
+        if (!serverStatus.online) {
             const offlineServerNotification = new Notification('Server is offline, starting it up... please wait 1 minute.', 'WARN');
             offlineServerNotification.send();
-            if (serverStatus.status == 'SERVICE_OFFLINE') {
+            if (!serverStatus.service_online && !serverStatus.online) {
                 await server.startService();
-            } else if (serverStatus.status == 'OFFLINE') {
+            } else if (serverStatus.service_online && !serverStatus.online) {
                 await server.start();
             }
             await this.sleep();

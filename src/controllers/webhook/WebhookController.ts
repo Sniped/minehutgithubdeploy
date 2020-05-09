@@ -6,7 +6,6 @@ import PushPayload from '../../types/PushEvent/PushPayload';
 import Repository from '../../types/PushEvent/repository/Repository';
 import Commit from '../../types/PushEvent/Commit';
 import FileUpload from '../../requests/FileUpload';
-import File from '../../types/FileUpload/File';
 import Notification from '../../discord/Notification';
 
 @Controller('/webhook')
@@ -23,10 +22,12 @@ export class WebhookController {
         initialNotification.send();
         commits.forEach(async c => {
             const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
-            const files: File[] = commit.data.files.map(f => { 
-                return { name: f.filename, url: f.raw_url } 
-            });
-            const req = new FileUpload(files);
+            const files: Promise<ReposGetContentsResponseData[]> = new Promise((resolve, reject) => commit.data.files.map(async f => { 
+                const fileRes = await octokit.repos.getContents({ owner: repo.owner.name, repo: repo.name, path: f.filename });
+                const file: ReposGetContentsResponseData = fileRes.data;
+                return file;
+            }));
+            const req = new FileUpload(await files);
             const responses = await req.execute();
             const filteredRes = responses.filter(f => f.res.status !== 200);
             if (filteredRes.length > 0) {

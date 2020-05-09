@@ -1,20 +1,20 @@
 import fetch from 'node-fetch';
-import File from '../types/FileUpload/File';
 import { config } from '../Config';
 import FileResponse from '../types/FileUpload/FileResponse';
 
 export default class FileUpload {
     
-    files: File[];
+    files: ReposGetContentsResponseData[];
     
-    constructor(files: File[]) {
+    constructor(files: ReposGetContentsResponseData[]) {
         this.files = files;
     }
 
     async execute() : Promise<FileResponse[]> {
         const fileResponses: FileResponse[] = [];
         this.files.forEach(async file => {
-            const text = await this.fetchRawText(file.url);
+            if (Array.isArray(file)) return;
+            const text = Buffer.from(file.content!, 'base64').toString();
             const body = { content: text };
             console.log(body);
             const path = `/plugins/Skript/scripts/${file.name}`
@@ -30,11 +30,6 @@ export default class FileUpload {
             fileResponses.push({ name: file.name, res: res });
         });
         return fileResponses;
-    }
-
-    async fetchRawText(url: string) : Promise<string> {
-        const res = await fetch(url);
-        return await res.text();
     }
 
 }

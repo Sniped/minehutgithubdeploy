@@ -24,6 +24,7 @@ export class WebhookController {
             const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
             const files: Promise<ReposGetContentsResponseData[]> = new Promise((resolve, reject) => commit.data.files.map(async f => { 
                 const fileRes = await octokit.repos.getContents({ owner: repo.owner.name, repo: repo.name, path: f.filename });
+                console.log(fileRes);
                 const file: ReposGetContentsResponseData = fileRes.data;
                 return file;
             }));

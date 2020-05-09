@@ -33,6 +33,7 @@ export default class Server {
                 'x-session-id': this.options.sessionID
             }
         });
+        await res.json();
         return res.status == 200;
     }
 
@@ -45,6 +46,7 @@ export default class Server {
                 'x-session-id': this.options.sessionID
             }
         });
+        await res.json();
         return res.status == 200;
     }
 

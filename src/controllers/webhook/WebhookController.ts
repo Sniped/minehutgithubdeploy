@@ -23,39 +23,41 @@ export class WebhookController {
         const initialNotification = new Notification('Received webhook request', 'INFO');
         initialNotification.send();
         const serverStatus: StatusRes = await server.getStatus();
+        const upload: Function = () => {
+            commits.forEach(async c => {
+                const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
+                const files: ReposGetContentsResponseData[] = [];
+                for (var i = 0; i < commit.data.files.length; i++) {
+                    const f = commit.data.files[0];
+                    const fileRes = await octokit.repos.getContents({ owner: repo.owner.name, repo: repo.name, path: f.filename });
+                    const file: ReposGetContentsResponseData = fileRes.data;
+                    files.push(file);
+                }
+                const req = new FileUpload(files);
+                const responses = await req.execute();
+                const filteredRes = responses.filter(f => f.res);
+                if (filteredRes.length > 0) {
+                    const errorNotification = new Notification('Error while uploading files to Minehut!', 'ERROR');
+                    errorNotification.send();
+                } else {
+                    const successNotifiation = new Notification('Successfully deployed all files!', 'SUCCESS');
+                    successNotifiation.send();
+                }
+            });    
+        }
         if (!serverStatus.online) {
             const offlineServerNotification = new Notification('Server is offline, starting it up... please wait 1 minute.', 'WARN');
             offlineServerNotification.send();
             if (!serverStatus.service_online && !serverStatus.online) {
-                await server.startService();
+                await server.startService(upload);
             } else if (serverStatus.service_online && !serverStatus.online) {
-                await server.start();
+                await server.start(upload);
             }
-            await this.sleep();
-        }
-        commits.forEach(async c => {
-            const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
-            const files: ReposGetContentsResponseData[] = [];
-            for (var i = 0; i < commit.data.files.length; i++) {
-                const f = commit.data.files[0];
-                const fileRes = await octokit.repos.getContents({ owner: repo.owner.name, repo: repo.name, path: f.filename });
-                const file: ReposGetContentsResponseData = fileRes.data;
-                files.push(file);
-            }
-            const req = new FileUpload(files);
-            const responses = await req.execute();
-            const filteredRes = responses.filter(f => f.res);
-            if (filteredRes.length > 0) {
-                const errorNotification = new Notification('Error while uploading files to Minehut!', 'ERROR');
-                errorNotification.send();
-            } else {
-                const successNotifiation = new Notification('Successfully deployed all files!', 'SUCCESS');
-                successNotifiation.send();
-            }
-        });
-    }
-
-    async sleep() : Promise<unknown> {
-        return new Promise(resolve => setTimeout(resolve, 30000));
+            server.on('change', async (val) => {
+                if (val == 'ONLINE') {
+                    await upload();
+                }
+            });
+        } else await upload();
     }
 }

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import ClientOptions from './discord/Client/ClientOptions';
 import ServerOptions from './minehut/server/ServerOptions';
+import { ServerEvent } from './minehut/server/types/EventTypes';
 
 interface ConfigInterface {
     github: {
@@ -11,6 +12,8 @@ interface ConfigInterface {
     discord: ClientOptions;
     minehut: {
         base: string;
+        ownerID: string;
+        changes: ServerEvent[];
         options: ServerOptions;
     }
 }

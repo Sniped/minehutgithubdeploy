@@ -1,14 +1,16 @@
 import ServerOptions from './ServerOptions';
 import fetch from 'node-fetch';
 import { config } from '../../Config';
-import { StatusRes } from './types/ResTypes';
+import { StatusRes, ServerData } from './types/ResTypes';
 import { FileUploadReq } from './types/ReqTypes';
+import ServerEventEmitter from './ServerEventEmitter';
 
-export default class Server {
+export default class Server extends ServerEventEmitter {
     
     options: ServerOptions;
 
     constructor(options: ServerOptions) {
+        super(config.minehut.changes);
         this.options = options;
     }
 
@@ -24,7 +26,20 @@ export default class Server {
         return body;
     }
 
-    async startService() : Promise<boolean> {
+    async getAllData() : Promise<ServerData> {
+        const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/status`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': this.options.token,
+                'x-session-id': this.options.sessionID
+            }
+        });
+        const body: ServerData[] = await res.json();
+        const serverData = body.filter(s => s._id == this.options.serverID);
+        return serverData[0];
+    }
+
+    async startService(callback : Function) : Promise<boolean> {
         const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/start_service`, {
             method: 'POST',
             headers: {
@@ -33,11 +48,11 @@ export default class Server {
                 'x-session-id': this.options.sessionID
             }
         });
-        await res.json();
+        callback();
         return res.status == 200;
     }
 
-    async start() : Promise<boolean> {
+    async start(callback : Function) : Promise<boolean> {
         const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/start`, {
             method: 'POST',
             headers: {
@@ -46,7 +61,7 @@ export default class Server {
                 'x-session-id': this.options.sessionID
             }
         });
-        await res.json();
+        callback();
         return res.status == 200;
     }
 

@@ -27,7 +27,7 @@ export default class Server extends ServerEventEmitter {
     }
 
     async getAllData() : Promise<ServerData> {
-        const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/status`, {
+        const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/all_data`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': this.options.token,

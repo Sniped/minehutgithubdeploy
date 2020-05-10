@@ -39,7 +39,7 @@ export default class Server extends ServerEventEmitter {
         return serverData[0];
     }
 
-    async startService(callback : Function) : Promise<boolean> {
+    async startService() : Promise<boolean> {
         const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/start_service`, {
             method: 'POST',
             headers: {
@@ -48,11 +48,10 @@ export default class Server extends ServerEventEmitter {
                 'x-session-id': this.options.sessionID
             }
         });
-        callback();
         return res.status == 200;
     }
 
-    async start(callback : Function) : Promise<boolean> {
+    async start() : Promise<boolean> {
         const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/start`, {
             method: 'POST',
             headers: {
@@ -61,7 +60,6 @@ export default class Server extends ServerEventEmitter {
                 'x-session-id': this.options.sessionID
             }
         });
-        callback();
         return res.status == 200;
     }
 

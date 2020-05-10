@@ -3,7 +3,7 @@ import { VerifySignature } from '../../middlewares/VerifySignature';
 import { Request } from 'express';
 import { octokit } from '../../Octokit';
 import { server } from '../../Minehut';
-import { StatusRes } from '../../minehut/server/types/ResTypes';
+import { StatusRes, ServerData } from '../../minehut/server/types/ResTypes';
 import PushPayload from '../../github/PushEvent/PushPayload';
 import Repository from '../../github/PushEvent/repository/Repository';
 import Commit from '../../github/PushEvent/Commit';
@@ -22,7 +22,7 @@ export class WebhookController {
         const commits: Commit[] = payload.commits;
         const initialNotification = new Notification('Received webhook request', 'INFO');
         initialNotification.send();
-        const serverStatus: StatusRes = await server.getStatus();
+        const serverData: ServerData = await server.getAllData();
         async function upload() {
             commits.forEach(async c => {
                 const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
@@ -45,15 +45,16 @@ export class WebhookController {
                 }
             });
         }
-        if (!serverStatus.online) {
+        if (serverData.status != 'ONLINE') {
             const offlineServerNotification = new Notification('Server is offline, starting it up... please wait 1 minute.', 'WARN');
             offlineServerNotification.send();
-            if (!serverStatus.service_online && !serverStatus.online) {
-                await server.startService(upload);
-            } else if (serverStatus.service_online && !serverStatus.online) {
-                await server.start(upload);
+            if (serverData.status == 'SERVICE_OFFLINE') {
+                await server.startService();
+            } else if (serverData.status == 'OFFLINE') {
+                await server.start();
             }
             server.on('change', async (val) => {
+                console.log('emitted');
                 if (val == 'ONLINE') {
                     await upload();
                 }

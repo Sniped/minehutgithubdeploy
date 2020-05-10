@@ -23,7 +23,7 @@ export class WebhookController {
         const initialNotification = new Notification('Received webhook request', 'INFO');
         initialNotification.send();
         const serverData: ServerData = await server.getAllData();
-        async function upload() {
+        const upload: Function = async () => {
             commits.forEach(async c => {
                 const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
                 const files: ReposGetContentsResponseData[] = [];
@@ -56,6 +56,7 @@ export class WebhookController {
             }
             server.on('change', async (val) => {
                 console.log('emitted');
+                console.log(val);
                 if (val == 'ONLINE') {
                     await upload();
                 }

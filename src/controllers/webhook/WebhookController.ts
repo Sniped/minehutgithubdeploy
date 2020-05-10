@@ -45,6 +45,7 @@ export class WebhookController {
                 }
             });
         }
+        console.log(serverData.status);
         if (serverData.status != 'ONLINE') {
             const offlineServerNotification = new Notification('Server is offline, starting it up... please wait 1 minute.', 'WARN');
             offlineServerNotification.send();

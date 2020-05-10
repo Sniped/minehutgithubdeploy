@@ -45,7 +45,6 @@ export class WebhookController {
                 }
             });
         }
-        console.log(serverData.status);
         if (serverData.status != 'ONLINE') {
             const offlineServerNotification = new Notification('Server is offline, starting it up... please wait 1 minute.', 'WARN');
             offlineServerNotification.send();
@@ -55,8 +54,6 @@ export class WebhookController {
                 await server.start();
             }
             server.on('change', async (val) => {
-                console.log('emitted');
-                console.log(val);
                 if (val == 'ONLINE') {
                     await upload();
                 }

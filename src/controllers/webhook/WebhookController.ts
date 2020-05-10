@@ -23,7 +23,7 @@ export class WebhookController {
         const initialNotification = new Notification('Received webhook request', 'INFO');
         initialNotification.send();
         const serverStatus: StatusRes = await server.getStatus();
-        const upload: Function = () => {
+        async function upload() {
             commits.forEach(async c => {
                 const commit = await octokit.repos.getCommit({ owner: repo.owner.name, repo: repo.name, ref: payload.ref });
                 const files: ReposGetContentsResponseData[] = [];
@@ -43,7 +43,7 @@ export class WebhookController {
                     const successNotifiation = new Notification('Successfully deployed all files!', 'SUCCESS');
                     successNotifiation.send();
                 }
-            });    
+            });
         }
         if (!serverStatus.online) {
             const offlineServerNotification = new Notification('Server is offline, starting it up... please wait 1 minute.', 'WARN');

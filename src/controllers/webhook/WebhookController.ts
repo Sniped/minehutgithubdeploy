@@ -3,7 +3,7 @@ import { VerifySignature } from '../../middlewares/VerifySignature';
 import { Request } from 'express';
 import { octokit } from '../../Octokit';
 import { server } from '../../Minehut';
-import { StatusRes, ServerData } from '../../minehut/server/types/ResTypes';
+import { ServerData } from '../../minehut/server/types/ResTypes';
 import PushPayload from '../../github/PushEvent/PushPayload';
 import Repository from '../../github/PushEvent/repository/Repository';
 import Commit from '../../github/PushEvent/Commit';
@@ -20,8 +20,6 @@ export class WebhookController {
         const payload: PushPayload = req.body;
         const repo: Repository = payload.repository;
         const commits: Commit[] = payload.commits;
-        const initialNotification = new Notification('Received webhook request', 'INFO');
-        initialNotification.send();
         const serverData: ServerData = await server.getAllData();
         const upload: Function = async () => {
             commits.forEach(async c => {

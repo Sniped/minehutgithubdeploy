@@ -25,10 +25,8 @@ export default class ServerEventEmitter extends EventEmitter {
                 const comparison: ServerEventComparison = (eventComparisons.filter(ec => ec.name === event.name))[0];
                 if (eventComparisons.length > 0 && comparison) {
                     let values = comparison.val;
-                    console.log(values);
                     if (values.length >= 2) {
                         if (values[0] != values[1]) {
-                            console.log(`${values[0]} - ${values[1]}`);
                             this.emit('change', event.name, values[1]);
                         }
                         values = [val];

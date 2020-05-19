@@ -20,15 +20,13 @@ export default class Server extends ServerEventEmitter {
 
     async setCreds() {
         const loginRes = await this.login();
-        console.log(loginRes);
         this.token = loginRes.token;
-        console.log(this.token);
         this.sessionID = loginRes.sessionId;
-        console.log(this.sessionID);
     }
 
     async login() : Promise<LoginRes> {
         const res = await fetch(`${config.minehut.base}/users/login`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },

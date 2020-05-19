@@ -114,6 +114,19 @@ export interface ServerData {
     active_server_plan_details: ActiveServerPlanDetails;
 }
 
+export interface LoginRes {
+    _id: string;
+    session: Sessions[];
+    token: string;
+    sessionId: string;
+    servers: string[];
+}
+
+export interface Sessions {
+    sessionId: string;
+    created: number;
+}
+
 export interface FileRes {
     name: string;
     res: boolean;

@@ -1,20 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import ClientOptions from './discord/Client/ClientOptions';
-import ServerOptions from './minehut/server/ServerOptions';
-import { ServerEvent } from './minehut/server/types/EventTypes';
+import ClientOptions from './discord/client/ClientOptions';
+import ServerInterface from './minehut/server/ServerInterface';
+import RepoInterface from './github/RepoInterface';
 
 interface ConfigInterface {
     github: {
+        repos: RepoInterface[];
         secret: string;
         accessToken: string;
     }
     discord: ClientOptions;
     minehut: {
         base: string;
-        ownerID: string;
-        changes: ServerEvent[];
-        options: ServerOptions;
+        servers: ServerInterface[];
     }
 }
 

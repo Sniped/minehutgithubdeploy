@@ -1,30 +1,33 @@
 import { EventEmitter } from "events";
 import { ServerEvent, ServerEventComparison } from "./types/EventTypes";
-import { server } from '../../Minehut';
 import { ServerData } from "./types/ResTypes";
+import Server from "./Server";
 
 export default class ServerEventEmitter extends EventEmitter {
     
     events: ServerEvent[];
+    server?: Server | null;
 
-    constructor(events: ServerEvent[]) {
+    constructor(events: ServerEvent[], server?: Server) {
         super();
+        this.server = server || null;
         this.events = events;
     }
 
     listen() {
+        if (!this.server) throw new Error('No server specified!');
         const eventComparisons: ServerEventComparison[] = [];
         setInterval(async () => {
             for (var i = 0; i < this.events.length; i++) {
                 const event = this.events[i];
-                const data: ServerData = await server.getAllData();
+                const data: ServerData = await this.server!.getAllData();
                 const val = data[event.change];
                 const comparison: ServerEventComparison = (eventComparisons.filter(ec => ec.name === event.name))[0];
                 if (eventComparisons.length > 0 && comparison) {
                     let values = comparison.val;
                     if (values.length >= 2) {
                         if (values[0] != values[1]) {
-                            this.emit('change', values[1]);
+                            this.emit('change', event.name, values[1]);
                         }
                         values = [val];
                     } else {

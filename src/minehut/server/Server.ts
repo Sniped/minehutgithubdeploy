@@ -1,25 +1,47 @@
-import ServerOptions from './ServerOptions';
+import ServerInterface from './ServerInterface';
 import fetch from 'node-fetch';
 import { config } from '../../Config';
-import { StatusRes, ServerData } from './types/ResTypes';
+import { StatusRes, ServerData, LoginRes } from './types/ResTypes';
 import { FileUploadReq } from './types/ReqTypes';
 import ServerEventEmitter from './ServerEventEmitter';
 
 export default class Server extends ServerEventEmitter {
     
-    options: ServerOptions;
+    options: ServerInterface;
+    token?: string;
+    sessionID?: string;
 
-    constructor(options: ServerOptions) {
-        super(config.minehut.changes);
+
+    constructor(options: ServerInterface) {
+        super(options.changes);
+        this.server = this;
         this.options = options;
+        this.setCreds();
+    }
+
+    async setCreds() {
+        const loginRes = await this.login();
+        this.token = loginRes.token;
+        this.sessionID = loginRes.sessionId;
+    }
+
+    async login() : Promise<LoginRes> {
+        const res = await fetch(`${config.minehut.base}/users/login`, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.options.creds)
+        });
+        const body: LoginRes = await res.json();
+        return body;
     }
 
     async getStatus() : Promise<StatusRes> {
         const res = await fetch(`${config.minehut.base}/server/${this.options.serverID}/status`, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.options.token,
-                'x-session-id': this.options.sessionID
+                'Authorization': this.token!,
+                'x-session-id': this.sessionID!
             }
         });
         const body: StatusRes = await res.json();
@@ -27,11 +49,11 @@ export default class Server extends ServerEventEmitter {
     }
 
     async getAllData() : Promise<ServerData> {
-        const res = await fetch(`${config.minehut.base}/servers/${config.minehut.ownerID}/all_data`, {
+        const res = await fetch(`${config.minehut.base}/servers/${this.options.ownerID}/all_data`, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.options.token,
-                'x-session-id': this.options.sessionID
+                'Authorization': this.token!,
+                'x-session-id': this.sessionID!
             }
         });
         const body: ServerData[] = await res.json();
@@ -44,8 +66,8 @@ export default class Server extends ServerEventEmitter {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.options.token,
-                'x-session-id': this.options.sessionID
+                'Authorization': this.token!,
+                'x-session-id': this.sessionID!
             }
         });
         return res.status == 200;
@@ -56,8 +78,8 @@ export default class Server extends ServerEventEmitter {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.options.token,
-                'x-session-id': this.options.sessionID
+                'Authorization': this.token!,
+                'x-session-id': this.sessionID!
             }
         });
         return res.status == 200;
@@ -69,8 +91,8 @@ export default class Server extends ServerEventEmitter {
             body: JSON.stringify({ content: content.content }),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.options.token,
-                'x-session-id': this.options.sessionID
+                'Authorization': this.token!,
+                'x-session-id': this.sessionID!
             }
         });
         return res.status == 200;

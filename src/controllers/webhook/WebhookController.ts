@@ -9,7 +9,6 @@ import Repository from '../../github/PushEvent/repository/Repository';
 import Commit from '../../github/PushEvent/Commit';
 import FileUpload from '../../minehut/FileUpload';
 import Notification from '../../discord/Notification';
-import Server from '../../minehut/server/Server';
 import { config } from '../../Config';
 
 @Controller('/webhook')
@@ -58,6 +57,8 @@ export class WebhookController {
                 await server.start();
             }
             server.on('change', async (name: string, val) => {
+                console.log('emitted');
+                console.log(`${name} -- ${val}`);
                 if (name == 'statusChange' && val == 'ONLINE') {
                     await upload();
                 }

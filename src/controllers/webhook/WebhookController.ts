@@ -34,6 +34,7 @@ export class WebhookController {
                     const f = commit.data.files[0];
                     const fileRes = await octokit.repos.getContents({ owner: repo.owner.name, repo: repo.name, path: f.filename });
                     const file: ReposGetContentsResponseData = fileRes.data;
+                    console.log(file);
                     files.push(file);
                 }
                 const req = new FileUpload(files, server);

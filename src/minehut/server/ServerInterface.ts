@@ -5,7 +5,7 @@ export default interface ServerInterface {
     changes: ServerEvent[];
     ownerID: string;
     creds: {
-        username: string;
+        email: string;
         password: string;
     }
 }

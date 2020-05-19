@@ -58,7 +58,7 @@ export class WebhookController {
                 await server.start();
             }
             server.on('change', async (name: string, val) => {
-                // console.log(`${name} -- ${val}`);
+                console.log(`${name} -- ${val}`);
                 if (name == 'statusChange' && val == 'ONLINE') {
                     await upload();
                 }

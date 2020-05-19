@@ -1,14 +1,14 @@
-import fetch from 'node-fetch';
-import { server } from '../Minehut';
-import { config } from '../Config';
 import { FileRes } from './server/types/ResTypes';
+import Server from './server/Server';
 
 export default class FileUpload {
     
     files: ReposGetContentsResponseData[];
+    server: Server;
     
-    constructor(files: ReposGetContentsResponseData[]) {
+    constructor(files: ReposGetContentsResponseData[], server: Server) {
         this.files = files;
+        this.server = server;
     }
 
     async execute() : Promise<FileRes[]> {
@@ -18,7 +18,7 @@ export default class FileUpload {
                 const text = Buffer.from(file.content!, 'base64').toString();
                 const body = { content: text };
                 const path = `/plugins/Skript/scripts/${file.name}`
-                const res = await server.uploadFile(path, body);
+                const res = await this.server.uploadFile(path, body);
                 fileResponses.push({ name: file.name, res: res });
             }
         });

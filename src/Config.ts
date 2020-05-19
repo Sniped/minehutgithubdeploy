@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import ClientOptions from './discord/client/ClientOptions';
+import ClientOptions from './discord/Client/ClientOptions';
 import ServerInterface from './minehut/server/ServerInterface';
 import RepoInterface from './github/RepoInterface';
 

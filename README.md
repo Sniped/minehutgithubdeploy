@@ -1,3 +1,6 @@
+# DEPRECATED
+This tool can no longer be used for Minehut due to changes with authenticating through Auth0. As such, this repo is archived.
+
 # Minehut Github Deploy
 Seamlessly deploy files from a Github repository
 
